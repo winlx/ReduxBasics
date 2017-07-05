@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { createStore } from 'redux';
 import './App.css';
 
-import { createStore } from './redux';
 
 const initialState = { count: 0 };
 
@@ -18,9 +18,17 @@ function reducer(previousState, action) {
   }
 }
 
-const incrementAction = { type: 'INCREMENT', amount: 1 };
-const decrementAction = { type: 'DECREMENT', amount: 1 };
-const resetAction = { type: 'RESET' };
+function increment(amount) {
+  return { type: 'INCREMENT', amount };
+}
+
+function decrement(amount) {
+  return { type: 'DECREMENT', amount };
+}
+
+function reset() {
+  return { type: 'RESET' };
+}
 
 const store = createStore(reducer, initialState);
 
@@ -34,21 +42,21 @@ class App extends Component {
   }
 
   componentDidMount() {
-    store.subscribe(() => {
-      this.forceUpdate()
-    });
+    store.subscribe(() => this.forceUpdate());
   }
 
   increment() {
-    store.dispatch(incrementAction);
+    let amount = parseInt(this.amount.value || 1, 10);
+    store.dispatch(increment(amount));
   }
 
   decrement() {
-    store.dispatch(decrementAction);
+    let amount = parseInt(this.amount.value || 1, 10);
+    store.dispatch(decrement(amount));
   }
 
   reset() {
-    store.dispatch(resetAction);
+    store.dispatch(reset());
   }
 
   render() {
@@ -63,6 +71,8 @@ class App extends Component {
           <button className="reset" onClick={this.reset}>R</button>
           <button className="increment" onClick={this.increment}>+</button>
         </div>
+
+        <input type="text" ref={(input) => { this.amount = input; }} defaultValue={1} />
       </div>
     );
   }
