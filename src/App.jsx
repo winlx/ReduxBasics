@@ -1,81 +1,108 @@
 import React, { Component } from 'react';
-import { createStore } from 'redux';
+import PropTypes from 'prop-types';
+
 import './App.css';
 
-
-const initialState = { count: 0 };
-
-function reducer(previousState, action) {
-  switch (action.type) {
-    case 'INCREMENT':
-      return { count: previousState.count + action.amount };
-    case 'DECREMENT':
-      return { count: previousState.count - action.amount };
-    case 'RESET':
-      return { count: 0 };
-    default:
-      return previousState;
-  }
-}
-
-function increment(amount) {
-  return { type: 'INCREMENT', amount };
-}
-
-function decrement(amount) {
-  return { type: 'DECREMENT', amount };
-}
-
-function reset() {
-  return { type: 'RESET' };
-}
-
-const store = createStore(reducer, initialState);
+import Header from './components/Header';
+import List from './components/List';
+import Form from './components/Form';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.increment = this.increment.bind(this);
-    this.decrement = this.decrement.bind(this);
-    this.reset = this.reset.bind(this);
+    this.state = {
+      todos: this.props.initialData
+    };
+
+    this._nextId = this.state.todos.length;
+
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
-  componentDidMount() {
-    store.subscribe(() => this.forceUpdate());
+  nextId() {
+    return this._nextId += 1;
   }
 
-  increment() {
-    let amount = parseInt(this.amount.value || 1, 10);
-    store.dispatch(increment(amount));
+  handleAdd(title) {
+    const todo = {
+      id: this.nextId(),
+      title,
+      completed: false,
+    };
+
+    const todos = [...this.state.todos, todo];
+
+    this.setState({ todos });
   }
 
-  decrement() {
-    let amount = parseInt(this.amount.value || 1, 10);
-    store.dispatch(decrement(amount));
+  handleDelete(id) {
+    const index = this.state.todos.findIndex(todo => todo.id === id);
+    const todos = [
+      ...this.state.todos.slice(0, index),
+      ...this.state.todos.slice(index + 1),
+    ];
+
+    this.setState({ todos });
   }
 
-  reset() {
-    store.dispatch(reset());
+  handleToggle(id) {
+    const todos = this.state.todos.map(todo => {
+      if (todo.id !== id) {
+        return todo;
+      }
+
+      return Object.assign({}, todo, {
+        completed: !todo.completed,
+      });
+    });
+
+    this.setState({ todos });
+  }
+
+  handleEdit(id, title) {
+    const todos = this.state.todos.map(todo => {
+      if (todo.id !== id) {
+        return todo;
+      }
+
+      return Object.assign({}, todo, {
+        title: title,
+      });
+    });
+
+    this.setState({ todos });
   }
 
   render() {
-    const count = store.getState().count;
+    const todos = this.state.todos;
 
     return (
-      <div className="counter">
-        <span className="count">{count}</span>
+      <main>
+        <Header todos={todos} />
 
-        <div className="buttons">
-          <button className="decrement" onClick={this.decrement}>-</button>
-          <button className="reset" onClick={this.reset}>R</button>
-          <button className="increment" onClick={this.increment}>+</button>
-        </div>
+        <List
+          todos={todos}
+          onDelete={this.handleDelete}
+          onToggle={this.handleToggle}
+          onEdit={this.handleEdit}
+        />
 
-        <input type="text" ref={(input) => { this.amount = input; }} defaultValue={1} />
-      </div>
+        <Form onAdd={this.handleAdd} />
+      </main>
     );
   }
 }
+
+App.propTypes = {
+  initialData: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    completed: PropTypes.bool.isRequired,
+  })).isRequired,
+};
 
 export default App;
