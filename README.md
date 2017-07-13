@@ -29,3 +29,8 @@ git checkout adding-filter
 ```bash
 git checkout async
 ```
+#### Start the server
+
+```bash
+node server
+```

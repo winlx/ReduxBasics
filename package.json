@@ -16,6 +16,8 @@
     "redux": "^3.7.1"
   },
   "devDependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
     "react-scripts": "^1.0.10"
   }
 }
