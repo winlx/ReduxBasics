@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 
 import List from '../components/List';
+import { getFilteredTodos } from '../reducers/reducer';
 
 import {
   deleteTodo,
@@ -10,7 +11,7 @@ import {
 
 function mapStateToProps(state) {
   return {
-    todos: state,
+    todos: getFilteredTodos(state),
   };
 }
 

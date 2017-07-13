@@ -37,7 +37,7 @@ function todoReducer(state = {}, action) {
   }
 }
 
-export default function reducer(state = [], action) {
+export default function reducerApp(state = [], action) {
   switch (action.type) {
     case ADD_TODO: {
       return [...state, todoReducer(undefined, action)];
@@ -61,5 +61,19 @@ export default function reducer(state = [], action) {
 
     default:
       return state;
+  }
+}
+
+// Функция selector
+export function getFilteredTodos(todos, filter) {
+  switch (filter) {
+    case 'COMPLETED':
+      return todos.filter(todo => todo.completed);
+
+    case 'UNCOMPLETED':
+      return todos.filter(todo => !todo.completed);
+
+    default:
+      return todos;
   }
 }
