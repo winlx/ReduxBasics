@@ -11,7 +11,7 @@ const app = express();
 
 let nextId = 5;
 
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (process.env.PORT || 3001));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());

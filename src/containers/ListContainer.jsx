@@ -12,6 +12,7 @@ import {
 function mapStateToProps(state) {
   return {
     todos: getFilteredTodos(state),
+    fetching: state.fetching,
   };
 }
 

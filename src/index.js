@@ -6,6 +6,9 @@ import './index.css';
 
 import App from './App';
 import store from './store/index';
+import { getTodos } from './actions/actionCreators';
+
+store.dispatch(getTodos());
 
 ReactDOM.render(
   <Provider store={store}>

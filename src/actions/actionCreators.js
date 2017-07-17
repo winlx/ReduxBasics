@@ -1,37 +1,56 @@
-import { EDIT_TODO,
+import axios from 'axios';
+
+import {
+  EDIT_TODO,
   ADD_TODO,
   TOGGLE_TODO,
   DELETE_TODO,
+  GET_TODOS,
+  REQUEST_TODOS,
 } from './actionTypes';
 
-let nextId = 5;
+export function getTodos() {
+  return (dispatch) => {
+    dispatch({
+      type: REQUEST_TODOS,
+    });
+
+    return axios.get('api/todos')
+      .then(response => dispatch({
+        type: GET_TODOS,
+        todos: response.data,
+      }));
+  };
+}
 
 export function addTodo(title) {
-  return {
-    type: ADD_TODO,
-    id: nextId++,
-    title,
-  };
+  return axios.post('api/todos', { title })
+    .then(response => ({
+      type: ADD_TODO,
+      todo: response.data,
+    }));
 }
 
 export function deleteTodo(id) {
-  return {
-    type: DELETE_TODO,
-    id,
-  };
+  return axios.delete(`api/todos/${id}`)
+    .then(response => ({
+      type: DELETE_TODO,
+      id,
+    }));
 }
 
 export function toggleTodo(id) {
-  return {
-    type: TOGGLE_TODO,
-    id,
-  };
+  return axios.patch(`api/todos/${id}`)
+    .then(response => ({
+      type: TOGGLE_TODO,
+      todo: response.data,
+    }));
 }
 
 export function editTodo(id, title) {
-  return {
-    type: EDIT_TODO,
-    id,
-    title,
-  };
+  return axios.put(`api/todos/${id}`, { title })
+    .then(response => ({
+      type: EDIT_TODO,
+      todo: response.data,
+    }));
 }
